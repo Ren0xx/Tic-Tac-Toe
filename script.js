@@ -1,5 +1,9 @@
+let currentSign = "o";
+let currentPlayer = "";
+
+
 const Gameboard = (() => {
-  const gameboard = ["X", "", "X", "O", "X", "", "X", "O", "X"];
+  const gameboard = ["", "", "", "", "", "", "", "", ""];
 
   function changeValue(idx, value) {
     if (
@@ -32,8 +36,6 @@ const Player = (name, sign) => {
 };
 
 const displayController = (() => {
-  let currentSign = "o";
-  let currentPlayer = "";
   const players = [];
   const gameboard = Gameboard;
 
@@ -45,13 +47,13 @@ const displayController = (() => {
     return players;
   }
   function renderPlayers() {
-    const playerDiv = document.querySelectorAll(".player");
-    for (let [index,player] of playerDiv.entries()) {
+    const playerDiv = document.querySelectorAll(".player1, .player2");
+    for (let [index, player] of playerDiv.entries()) {
       const name = player.querySelector(".name");
       name.textContent = players[index].getName();
 	  
       const score = player.querySelector(".score");
-	  score.textContent = players[index].getScore();
+	    score.textContent = players[index].getScore();
     }
     
   }
@@ -64,12 +66,37 @@ const displayController = (() => {
       field.textContent = gameboard.getGameboard()[index];
       field.addEventListener("click", () => {
         gameboard.changeValue(index, currentSign); //changing the value of the array
-        field.textContent = gameboard.getGameboard()[index]; //changing the value in the display (on the page)
+        field.textContent = gameboard.getGameboard()[index];//changing the value in the display (on the page)
+        // renderPlayers();
       });
     }
+    
+  }
+  function checkIfWon(){
+    if ((gameboard.getGameboard().slice(0, 3).every(el => el === "X" || el === "O"))){
+        console.log('you have won');
+      }
+    // if (!(gameboard.getGameboard().slice(0, 3).includes(""))){
+    //     console.log('you have won');
+    //   }
+    // if (!(gameboard.getGameboard().slice(0, 3).includes(""))){
+    //     console.log('you have won');
+    //   }
+    // if (!(gameboard.getGameboard().slice(0, 3).includes(""))){
+    //     console.log('you have won');
+    //   }
+    // if (!(gameboard.getGameboard().slice(0, 3).includes(""))){
+    //     console.log('you have won');
+    //   }
+    // if (!(gameboard.getGameboard().slice(0, 3).includes(""))){
+    //     console.log('you have won');
+    //   }
+    // if (!(gameboard.getGameboard().slice(0, 3).includes(""))){
+    //     console.log('you have won');
+    // }
   }
 
-  return { addPlayer, getPlayers, renderGameboard, renderPlayers };
+  return { addPlayer, getPlayers, renderGameboard, renderPlayers , checkIfWon };
 })();
 
 function initializeGame() {
@@ -79,17 +106,17 @@ function initializeGame() {
   displayController.addPlayer(player2);
   displayController.renderGameboard();
   displayController.renderPlayers();
-  let [p1, p2] = displayController.getPlayers();
-  // Gameboard.changeValue(5, 'o');
-  // Gameboard.changeValue(6, 'X');
-  // Gameboard.changeValue(7, 'X');
+  
+}
+function playGame() {
+  const game = document.querySelector(".gameboard");
+  game.addEventListener("click", (event) => {
+  displayController.renderGameboard();
+  displayController.renderPlayers();
+  displayController.checkIfWon();
+    })
 }
 
 initializeGame();
+playGame();
 
-// console.log(player1.getScore());
-// player1.addPoints(2);
-// // console.log(player1.getScore());
-
-// function PlayGame(){
-// }

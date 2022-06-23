@@ -1,14 +1,35 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container{
+    width: 60vw;
+}
 .gameboard{
     display: grid;
     justify-content: center;
     grid-template-columns: repeat(3, 200px);
     grid-template-rows: repeat(3, 200px);
+    cursor: pointer;
+
 }
 .gameboard-field{
-    border: 1px solid black;
-    font-size: 80px;
-    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
+    border: 1px solid black;
+    font-size: 80px;
+    
+}
+.players{
+    display: flex;
+    gap: 80%;
+}
+.players div{
+    padding: 15px;  
+    white-space: nowrap;
+}
+.players div p{
+    display: inline-block;
 }
