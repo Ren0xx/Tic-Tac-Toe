@@ -33,3 +33,7 @@ body{
 .players div p{
     display: inline-block;
 }
+#reset{
+    text-align: center;
+    width: 300px;
+}
