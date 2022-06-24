@@ -1,4 +1,4 @@
-let currentSign = "o";
+let currentSign = "X";
 let currentPlayer = "";
 
 
@@ -15,13 +15,18 @@ const Gameboard = (() => {
       value === "o"
     ) {
       gameboard[idx] = value.toUpperCase();
+      // currentSign = "O";
+      return true;
     }
   }
   function getGameboard() {
     return gameboard;
   }
+  function resetGameboard() {
+    return gameboard.map(value => "");
+  }
 
-  return { getGameboard, changeValue };
+  return { getGameboard, changeValue, resetGameboard };
 })();
 
 const Player = (name, sign) => {
@@ -65,58 +70,67 @@ const displayController = (() => {
     for (let [index, field] of fields.entries()) {
       field.textContent = gameboard.getGameboard()[index];
       field.addEventListener("click", () => {
-        gameboard.changeValue(index, currentSign); //changing the value of the array
-        field.textContent = gameboard.getGameboard()[index];//changing the value in the display (on the page)
-        // renderPlayers();
+        if(gameboard.changeValue(index, currentSign))
+        {
+          field.textContent = gameboard.getGameboard()[index];//changing the value in the display (on the page)
+          
+        }; 
       });
     }
     
   }
   function checkIfWon(){
-    if ((gameboard.getGameboard().slice(0, 3).every(el => el === "X" || el === "O"))){
-        console.log('you have won');
+    const gameboardFields = gameboard.getGameboard();
+    if ((gameboardFields.slice(0, 3).every(el => el === "X" || el === "O"))){
+        console.log('you have won1');
       }
-    // if (!(gameboard.getGameboard().slice(0, 3).includes(""))){
-    //     console.log('you have won');
-    //   }
-    // if (!(gameboard.getGameboard().slice(0, 3).includes(""))){
-    //     console.log('you have won');
-    //   }
-    // if (!(gameboard.getGameboard().slice(0, 3).includes(""))){
-    //     console.log('you have won');
-    //   }
-    // if (!(gameboard.getGameboard().slice(0, 3).includes(""))){
-    //     console.log('you have won');
-    //   }
-    // if (!(gameboard.getGameboard().slice(0, 3).includes(""))){
-    //     console.log('you have won');
-    //   }
-    // if (!(gameboard.getGameboard().slice(0, 3).includes(""))){
-    //     console.log('you have won');
-    // }
+    if ((gameboardFields.slice(3, 6).every(el => el === "X" || el === "O"))){
+        console.log('you have won2');
+      }
+    if ((gameboardFields.slice(6, 9).every(el => el === "X" || el === "O"))){
+        console.log('you have won3');
+      }
+      
+    for (let i = 0; i < 3; i++) {
+      const column = [gameboardFields[i], gameboardFields[i+3], gameboardFields[i+6]];
+      if (column.every(el => el === "X" || el === "O")){
+        console.log('hi2');
+      }
+    }
+    const crossLeft = [gameboardFields[0], gameboardFields[4], gameboardFields[8]];
+    const crossRight = [gameboardFields[2], gameboardFields[4], gameboardFields[6]];
+    if (crossLeft.every(el => el === "X" || el === "O") || crossRight.every(el => el === "X" || el === "O")){
+      console.log('win win win');
+    }
   }
-
   return { addPlayer, getPlayers, renderGameboard, renderPlayers , checkIfWon };
 })();
 
 function initializeGame() {
+ 
   const player1 = Player("player1", "X");
-  const player2 = Player("player2", "O");
+  const player2 = Player("player2", "O");//2
+  currentPlayer = player1;
+  currentSign = currentPlayer.getSign();
   displayController.addPlayer(player1);
   displayController.addPlayer(player2);
+
   displayController.renderGameboard();
-  displayController.renderPlayers();
+  displayController.renderPlayers();//3
   
 }
 function playGame() {
+  getInput();//1
   const game = document.querySelector(".gameboard");
-  game.addEventListener("click", (event) => {
-  displayController.renderGameboard();
-  displayController.renderPlayers();
-  displayController.checkIfWon();
+  game.addEventListener("click", () => {
+    displayController.checkIfWon();
     })
 }
 
 initializeGame();
 playGame();
 
+function getInput() {
+
+  
+}
