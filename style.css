@@ -1,10 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+:root{
+    --violet: #372772;
+    --green: #4fec77;
+    --fields: #A3A5C3;
+}
 body{
     font-family: 'Roboto', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #A5F3FC;
+    background-color: var(--violet);
+    color: var(--green);
 }
 .container{
     width: 60vw;
@@ -23,7 +30,13 @@ body{
     align-items: center;
     border: 1px solid black;
     font-size: 80px;
-    
+    background-color:var(--fields);
+}
+.gameboard-field:disabled,
+.gameboard-field[disabled]{
+  border: 1px solid #999999;
+  background-color: #d6d1c8;
+  color: #666666;
 }
 .players{
     display: flex;
@@ -40,13 +53,15 @@ body{
     text-align: center;
     width: 300px;
 }
+  
 
+
+/* starting site */
 a{ 
-    color: black;
+    color: var(--green);
     text-decoration: none;
 }
 a.button{
-
     text-decoration: none;
     padding: 25px;
     border: 1px solid black;
@@ -59,8 +74,6 @@ a.button{
     justify-content: center;
     align-items: center;
 }
-
-
 .playButton {
     position: relative;
     overflow: hidden;
@@ -71,7 +84,7 @@ a.button{
     border: 2px solid #1A1A1A;
     border-radius: 15px;
     box-sizing: border-box;
-    color: #3B3B3B;
+    color: var(--green);
     cursor: pointer;
     display: inline-block;
     font-size: 16px;
@@ -81,14 +94,12 @@ a.button{
     outline: none;
     width: 400px;
 }
-  
 .playButton:hover {
     color: #fff;
     background-color: #1A1A1A;
     box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
     transform: translateY(-2px);
 }
-  
 .playButton:active {
     box-shadow: none;
     transform: translateY(0);
