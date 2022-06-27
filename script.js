@@ -47,8 +47,8 @@ const displayController = (() => {
     return players;
   }
   function renderPlayers() {
-    const playerDiv = document.querySelectorAll(".player1, .player2");
-    for (let [index, player] of playerDiv.entries()) {
+    const playersDiv = document.querySelectorAll(".player1, .player2");
+    for (let [index, player] of playersDiv.entries()) {
       const name = player.querySelector(".name");
       name.textContent = players[index].getName();
     
@@ -92,7 +92,7 @@ const displayController = (() => {
     }
 
   }
-  return { addPlayer, getPlayers, renderGameboard, renderPlayers , checkIfWon };
+  return { addPlayer, getPlayers, renderGameboard, renderPlayers , checkIfWon, };
 })();
 
 let currentPlayer = null;
@@ -122,19 +122,16 @@ function playGame() {
 
   });
   playAgainButton.addEventListener("click", () =>{
-    PlayAgain();
-});
+    playAgain();
+    hideOrShowButtons(true, playAgainButton, resetButton);
+  });
   resetButton.addEventListener("click", () =>{
-    PlayAgain(true);
+    playAgain(true);
+    hideOrShowButtons(true, playAgainButton, resetButton);
   })
 
 }
-function Game(){
-  initializeGame();
-  playGame();
 
-}
-Game();
 
 function getUserInput() {
 
@@ -147,45 +144,49 @@ function enableOrDisableChildren(parent, disable){
   }
 }
 
-function PlayAgain(scoreReset) {
+function playAgain(scoreReset) {
   enableOrDisableChildren('.gameboard', false);
   Gameboard.resetGameboard();
   displayController.renderGameboard();
   if (scoreReset) {
-    displayController.getPlayers()[0].resetScore();
-    displayController.getPlayers()[1].resetScore();
+    displayController.getPlayers().forEach(player => player.resetScore());
     displayController.renderPlayers();
   }
 }
 
 function checkResult(field){
   if(Gameboard.changeValue(field.id, currentSign)){
+
     displayController.renderGameboard();
-    //win
-    if(displayController.checkIfWon()){
-      currentPlayer.addPoints();
+    if(displayController.checkIfWon() || !Gameboard.getGameboard().includes("")){
       enableOrDisableChildren('.gameboard', true);
-      playAgainButton.hidden = false;
-      resetButton.hidden = false;
+      hideOrShowButtons(false, playAgainButton, resetButton);
+
+      if (displayController.checkIfWon()){
+        currentPlayer.addPoints();
+      }
     }
-    //tie
-    else if(!Gameboard.getGameboard().includes("")){
-      enableOrDisableChildren('.gameboard', true);
-      playAgainButton.hidden = false;
-      resetButton.hidden = false;
-    }
-    // Gameboard.resetGameboard();
     displayController.renderPlayers();
     currentPlayer = (currentPlayer === displayController.getPlayers()[0]) ? displayController.getPlayers()[1] : displayController.getPlayers()[0];
     currentSign = currentPlayer.getSign();
   };
 }
+function hideOrShowButtons (hide, ...buttons){
+  for (let button of buttons){
+    button.hidden = hide;
+  }
+}
 
-// const container = document.querySelector(".container");
-  // const button = document.createElement('button');
-  // button.textContent = "Play";
-  // button.addEventListener('click', () =>{
-  // Gameboard.resetGameboard();
-  //  console.log(Gameboard.getGameboard());
-  // })
-  // container.appendChild(button);
+const Game = () => {
+  initializeGame();
+  playGame();
+
+};
+
+Game();
+
+//First page
+
+// window.addEventListener("beforeunload", function () {
+//   document.body.classList.add("animate-out");
+// });
