@@ -28,10 +28,11 @@ const Player = (name, sign) => {
   const getName = () => name || "anonymous";
   const getScore = () => score;
   const getSign = () => sign;
-  const addPoints = (points) => {
-    score += points;
+  const addPoints = () => {
+    score ++;
   };
-  return { getName, getScore, getSign, addPoints };
+  const resetScore = () => score = 0;
+  return { getName, getScore, getSign, addPoints, resetScore };
 };
 
 const displayController = (() => {
@@ -95,8 +96,10 @@ const displayController = (() => {
 })();
 
 let currentPlayer = null;
-let currentSign = "X";
+let currentSign = null;
 const fields = document.querySelectorAll(".gameboard-field");
+const playAgainButton = document.querySelector("#playAgainButton");
+const resetButton = document.querySelector("#resetButton");
 
 
 function initializeGame() {
@@ -110,39 +113,20 @@ function initializeGame() {
   displayController.renderPlayers();
 }
 function playGame() {
-  getInput();//1
+  getUserInput();//1
 
   fields.forEach(field => {
     field.addEventListener("click", () =>{
-      if(Gameboard.changeValue(field.id, currentSign)){
-        displayController.renderGameboard();
-        if(displayController.checkIfWon()){
-          currentPlayer.addPoints(1);
-          enableOrDisableChildren('.gameboard', true);
-        }
-        else if( !Gameboard.getGameboard().includes("")){
-          console.log('its a tie');
-          enableOrDisableChildren('.gameboard', true);
-          const resetButton = document.querySelector("#reset");
-          resetButton.hidden = false;
-        }
-        // Gameboard.resetGameboard();
-        displayController.renderPlayers();
-        currentPlayer = (currentPlayer === displayController.getPlayers()[0]) ? displayController.getPlayers()[1] : displayController.getPlayers()[0];
-        currentSign = currentPlayer.getSign();
-      };
-
+        checkResult(field);
     });
 
   });
-  // const container = document.querySelector(".container");
-  // const button = document.createElement('button');
-  // button.textContent = "Play";
-  // button.addEventListener('click', () =>{
-  // Gameboard.resetGameboard();
-  //  console.log(Gameboard.getGameboard());
-  // })
-  // container.appendChild(button);
+  playAgainButton.addEventListener("click", () =>{
+    PlayAgain();
+});
+  resetButton.addEventListener("click", () =>{
+    PlayAgain(true);
+  })
 
 }
 function Game(){
@@ -152,7 +136,7 @@ function Game(){
 }
 Game();
 
-function getInput() {
+function getUserInput() {
 
   
 }
@@ -162,3 +146,46 @@ function enableOrDisableChildren(parent, disable){
       node.disabled = disable;
   }
 }
+
+function PlayAgain(scoreReset) {
+  enableOrDisableChildren('.gameboard', false);
+  Gameboard.resetGameboard();
+  displayController.renderGameboard();
+  if (scoreReset) {
+    displayController.getPlayers()[0].resetScore();
+    displayController.getPlayers()[1].resetScore();
+    displayController.renderPlayers();
+  }
+}
+
+function checkResult(field){
+  if(Gameboard.changeValue(field.id, currentSign)){
+    displayController.renderGameboard();
+    //win
+    if(displayController.checkIfWon()){
+      currentPlayer.addPoints();
+      enableOrDisableChildren('.gameboard', true);
+      playAgainButton.hidden = false;
+      resetButton.hidden = false;
+    }
+    //tie
+    else if(!Gameboard.getGameboard().includes("")){
+      enableOrDisableChildren('.gameboard', true);
+      playAgainButton.hidden = false;
+      resetButton.hidden = false;
+    }
+    // Gameboard.resetGameboard();
+    displayController.renderPlayers();
+    currentPlayer = (currentPlayer === displayController.getPlayers()[0]) ? displayController.getPlayers()[1] : displayController.getPlayers()[0];
+    currentSign = currentPlayer.getSign();
+  };
+}
+
+// const container = document.querySelector(".container");
+  // const button = document.createElement('button');
+  // button.textContent = "Play";
+  // button.addEventListener('click', () =>{
+  // Gameboard.resetGameboard();
+  //  console.log(Gameboard.getGameboard());
+  // })
+  // container.appendChild(button);
