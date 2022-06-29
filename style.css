@@ -3,7 +3,7 @@
 :root{
     --violet: #372772;
     --green: #4fec77;
-    --fields: #A3A5C3;
+    --fieldsColor: #A3A5C3;
 }
 body{
     font-family: 'Roboto', sans-serif;
@@ -30,7 +30,8 @@ body{
     align-items: center;
     border: 1px solid black;
     font-size: 80px;
-    background-color:var(--fields);
+    background-color: var(--fieldsColor);
+    cursor: pointer;
 }
 .gameboard-field:disabled,
 .gameboard-field[disabled]{

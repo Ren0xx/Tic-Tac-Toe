@@ -1,4 +1,3 @@
-
 const Gameboard = (() => {
   const gameboard = ["", "", "", "", "", "", "", "", ""];
 
@@ -182,6 +181,7 @@ const Game = () => {
   playGame();
 
 };
+
 
 Game();
 

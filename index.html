@@ -8,32 +8,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="style.css">
     </head>
-    <body class="animate-in">
-        <div class="container">
-            <span class="returnLink"><a id='returnLink' href="./starting.html"> &larr; Go back</a> </span>
-            <div class="gameboard">
-                <button id="0" class="gameboard-field" disable="true"></button>
-                <button id="1" class="gameboard-field"></button>
-                <button id="2" class="gameboard-field"></button>
-                <button id="3" class="gameboard-field"></button>
-                <button id="4" class="gameboard-field"></button>
-                <button id="5" class="gameboard-field"></button>
-                <button id="6" class="gameboard-field"></button>
-                <button id="7" class="gameboard-field"></button>
-                <button id="8"class="gameboard-field"></button>
-            </div>
-            <div class="players">
-                <div class="player1">
-                    <h2 class="name"></h2>
-                    <p>Score</p>: <p class="score"></p>
-                </div>
-                <div class="player2">
-                    <h2 class="name"></h2>
-                    <p>Score</p>: <p class="score"></p>
-                </div>
-            </div>
-            <button id="playAgainButton" hidden>PlayAgain</button>
-            <button id="resetButton" hidden>Reset</button>
+    <body>
+        <div class="startingContainer">
+            <button onclick="location.href='./game.html';" class="playButton">
+                Play Tic-Tac-Toe
+            </button>
+
         </div>
         <script src="script.js" async defer></script>
     </body>
