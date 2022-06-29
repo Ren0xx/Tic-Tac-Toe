@@ -24,11 +24,11 @@ const Gameboard = (() => {
 
 const Player = (name, sign) => {
   let score = 0;
-  const getName = () => name || "anonymous";
+  const getName = () => name || "Anonymous";
   const getScore = () => score;
   const getSign = () => sign;
   const addPoints = () => {
-    score ++;
+    score++;
   };
   const resetScore = () => score = 0;
   return { getName, getScore, getSign, addPoints, resetScore };
@@ -42,9 +42,11 @@ const displayController = (() => {
   function addPlayer(player) {
     players.push(player);
   }
+
   function getPlayers() {
     return players;
   }
+
   function renderPlayers() {
     const playersDiv = document.querySelectorAll(".player1, .player2");
     for (let [index, player] of playersDiv.entries()) {
@@ -63,6 +65,7 @@ const displayController = (() => {
     }
     
   }
+  
   function checkIfWon(){
     const allEqual = arr => arr.every(val => val === arr[0] && val !== "");
     const gameboardFields = gameboard.getGameboard();
@@ -91,59 +94,39 @@ const displayController = (() => {
     }
 
   }
-  return { addPlayer, getPlayers, renderGameboard, renderPlayers , checkIfWon, };
+  return { addPlayer, getPlayers, renderGameboard, renderPlayers , checkIfWon };
 })();
 
-let currentPlayer = null;
-let currentSign = null;
-const fields = document.querySelectorAll(".gameboard-field");
-const playAgainButton = document.querySelector("#playAgainButton");
-const resetButton = document.querySelector("#resetButton");
+function checkResult(field){
+  if(Gameboard.changeValue(field.id, currentSign)){
 
+    const hasWon = displayController.checkIfWon();
+    const isDraw = (!hasWon && !Gameboard.getGameboard().includes(""));
 
-function initializeGame() {
-  const player1 = Player("player1", "X");
-  const player2 = Player("player2", "O");
-  currentPlayer = player1;
-  currentSign = currentPlayer.getSign();
-  displayController.addPlayer(player1);
-  displayController.addPlayer(player2);
-  displayController.renderGameboard();
-  displayController.renderPlayers();
-}
-function playGame() {
-  getUserInput();//1
+    if (hasWon){
+      enableOrDisableChildren('.gameboard', true);
+      currentPlayer.addPoints();
+      if (currentPlayer.getScore() === MAX_POINTS_IN_ROUND){
+        hideOrShowButtons(false, newGameButton, winnerContainer);
+        showWinner(currentPlayer.getName(), currentPlayer.getSign());
+      }
+      else{
+        hideOrShowButtons(false, playAgainButton);
+      }
+    }
+    else if (isDraw){
+      enableOrDisableChildren('.gameboard', true);
+      hideOrShowButtons(false, playAgainButton);
+    }
 
-  fields.forEach(field => {
-    field.addEventListener("click", () =>{
-        checkResult(field);
-    });
-
-  });
-  playAgainButton.addEventListener("click", () =>{
-    playAgain();
-    hideOrShowButtons(true, playAgainButton, resetButton);
-  });
-  resetButton.addEventListener("click", () =>{
-    playAgain(true);
-    hideOrShowButtons(true, playAgainButton, resetButton);
-  })
-
+    displayController.renderGameboard();
+    displayController.renderPlayers();
+    currentPlayer = (currentPlayer === displayController.getPlayers()[0]) ? displayController.getPlayers()[1] : displayController.getPlayers()[0];
+    currentSign = currentPlayer.getSign();
+  };
 }
 
-
-function getUserInput() {
-
-  
-}
-function enableOrDisableChildren(parent, disable){
-  let childNodes = document.querySelector(parent).querySelectorAll('*');
-  for (let node of childNodes) {
-      node.disabled = disable;
-  }
-}
-
-function playAgain(scoreReset) {
+function playAgain(scoreReset) { 
   enableOrDisableChildren('.gameboard', false);
   Gameboard.resetGameboard();
   displayController.renderGameboard();
@@ -153,28 +136,68 @@ function playAgain(scoreReset) {
   }
 }
 
-function checkResult(field){
-  if(Gameboard.changeValue(field.id, currentSign)){
-
-    displayController.renderGameboard();
-    if(displayController.checkIfWon() || !Gameboard.getGameboard().includes("")){
-      enableOrDisableChildren('.gameboard', true);
-      hideOrShowButtons(false, playAgainButton, resetButton);
-
-      if (displayController.checkIfWon()){
-        currentPlayer.addPoints();
-      }
-    }
-    displayController.renderPlayers();
-    currentPlayer = (currentPlayer === displayController.getPlayers()[0]) ? displayController.getPlayers()[1] : displayController.getPlayers()[0];
-    currentSign = currentPlayer.getSign();
-  };
+function enableOrDisableChildren(parent, disable){
+  let childNodes = document.querySelector(parent).querySelectorAll('*');
+  for (let node of childNodes) {
+      node.disabled = disable;
+  }
 }
+
 function hideOrShowButtons (hide, ...buttons){
   for (let button of buttons){
     button.hidden = hide;
   }
 }
+
+function showWinner(playerName, playerSign) {
+    winnerHeader.textContent = `The winner is: '${playerName} (${playerSign})' !`;
+}
+
+window.addEventListener("beforeunload",  () => {
+  document.body.classList.add("animate-out");
+});
+
+function initializeGame() {
+  const player1Name = window.prompt("Enter the first player's name: ");
+  const player2Name = window.prompt("Enter the second player's name: ");
+  const player1 = Player(player1Name.toUpperCase(), "X");
+  const player2 = Player(player2Name.toUpperCase(), "O");
+  currentPlayer = player1;
+  currentSign = currentPlayer.getSign();
+  displayController.addPlayer(player1);
+  displayController.addPlayer(player2);
+  displayController.renderGameboard();
+  displayController.renderPlayers();
+}
+
+function playGame() {
+
+  fields.forEach(field => {
+    field.addEventListener("click", () =>{
+        checkResult(field);
+    });
+  });
+  
+  playAgainButton.addEventListener("click", () =>{
+    playAgain();
+    hideOrShowButtons(true, playAgainButton, winnerContainer );
+  });
+  newGameButton.addEventListener("click", () =>{
+    playAgain(true);
+    hideOrShowButtons(true, newGameButton, winnerContainer );
+  })
+
+}
+
+let currentPlayer = null;
+let currentSign = null;
+const fields = document.querySelectorAll(".gameboard-field");
+const playAgainButton = document.querySelector("#playAgainButton");
+const newGameButton = document.querySelector("#resetButton");
+const winnerHeader = document.querySelector(".roundWinner");
+const winnerContainer = document.querySelector(".showWinner");
+
+const MAX_POINTS_IN_ROUND = 5;
 
 const Game = () => {
   initializeGame();
@@ -182,11 +205,5 @@ const Game = () => {
 
 };
 
-
 Game();
 
-//First page
-
-// window.addEventListener("beforeunload", function () {
-//   document.body.classList.add("animate-out");
-// });
