@@ -6,10 +6,41 @@
         <title>Play with unbeatable AI</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
+        <link rel="stylesheet" href="style.css">
     </head>
-    <body>
-        <h1>Work in progress</h1>        
-        <script src="" async defer></script>
+    <!-- <body class="animate-in GamewithAi"> -->
+    <body class="GamewithAi">   
+        <div class="container ">
+            <span class="returnLink"><a id='returnLink' href="./index.html"> &larr; Go back</a> </span>
+            <div class="gameboard">
+                <button id="0" class="gameboard-field"></button>
+                <button id="1" class="gameboard-field"></button>
+                <button id="2" class="gameboard-field"></button>
+                <button id="3" class="gameboard-field"></button>
+                <button id="4" class="gameboard-field"></button>
+                <button id="5" class="gameboard-field"></button>
+                <button id="6" class="gameboard-field"></button>
+                <button id="7" class="gameboard-field"></button>
+                <button id="8"class="gameboard-field"></button>
+            </div>
+            <div class="players">
+                <div class="player1">
+                    <h2 class="name">Anonymous</h2>
+                    <p>Score</p>: <p class="score">0</p>
+                </div>
+                <div class="player2">
+                    <h2 class="name">Anonymous</h2>
+                    <p>Score</p>: <p class="score">0</p>
+                </div>
+            </div>
+            <div class="showWinner" hidden>
+                <h3 class="roundWinner"></h3>
+            </div>
+            <div class="resetButtons">
+                <button id="playAgainButton" hidden>Play Another Round</button>
+                <button id="resetButton" hidden>New Game </button>
+            </div>
+        </div>
+        <script src="script.js" async defer></script>
     </body>
 </html>

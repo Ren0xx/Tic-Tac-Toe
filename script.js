@@ -97,9 +97,7 @@ const displayController = (() => {
   return { addPlayer, getPlayers, renderGameboard, renderPlayers , checkIfWon };
 })();
 
-function checkResult(field){
-  if(Gameboard.changeValue(field.id, currentSign)){
-
+function checkResult(){
     const hasWon = displayController.checkIfWon();
     const isDraw = (!hasWon && !Gameboard.getGameboard().includes(""));
 
@@ -123,7 +121,7 @@ function checkResult(field){
     displayController.renderPlayers();
     currentPlayer = (currentPlayer === displayController.getPlayers()[0]) ? displayController.getPlayers()[1] : displayController.getPlayers()[0];
     currentSign = currentPlayer.getSign();
-  };
+  
 }
 
 function playAgain(scoreReset) { 
@@ -153,9 +151,9 @@ function showWinner(playerName, playerSign) {
     winnerHeader.textContent = `The winner is: '${playerName} (${playerSign})' !`;
 }
 
-window.addEventListener("beforeunload",  () => {
-  document.body.classList.add("animate-out");
-});
+// window.addEventListener("beforeunload",  () => {
+//   document.body.classList.add("animate-out");
+// });
 
 function initializeGame() {
   const player1Name = window.prompt("Enter the first player's name: ");
@@ -170,17 +168,30 @@ function initializeGame() {
   displayController.renderPlayers();
 }
 
+function initializeGameWithAi() {
+  const player1Name = "Adam";
+  const player1 = Player(player1Name.toUpperCase(), "X");
+  const computerPlayer = Player("Computer", "O");
+  currentPlayer = player1;
+  currentSign = currentPlayer.getSign();
+  displayController.addPlayer(player1);
+  displayController.addPlayer(computerPlayer);
+  displayController.renderGameboard();
+  displayController.renderPlayers();
+}
 function playGame() {
 
   fields.forEach(field => {
     field.addEventListener("click", () =>{
+      if(Gameboard.changeValue(field.id, currentSign)){
         checkResult(field);
+      }
     });
   });
   
   playAgainButton.addEventListener("click", () =>{
     playAgain();
-    hideOrShowButtons(true, playAgainButton, winnerContainer );
+    hideOrShowButtons(true, playAgainButton, winnerContainer);
   });
   newGameButton.addEventListener("click", () =>{
     playAgain(true);
@@ -188,22 +199,59 @@ function playGame() {
   })
 
 }
+function playGameWithComputer() {
+  fields.forEach(field => {
+    field.addEventListener("click", () =>{
+      if(Gameboard.changeValue(field.id, currentSign)){
+        checkResult();
+        
+      }
+    });
+  });
+  // console.table(getEmptyFields(fields));
+  console.log(getEmptyFields(fields));
+
+}
+function getEmptyFields(fields){
+  const result = Array.from(fields).filter(field => field.innerText.trim() === "").map(field => field.id);
+  return result;
+}
+
+function makeComputerMove(field){
+  field.click();
+
+}
 
 let currentPlayer = null;
 let currentSign = null;
 const fields = document.querySelectorAll(".gameboard-field");
-const playAgainButton = document.querySelector("#playAgainButton");
-const newGameButton = document.querySelector("#resetButton");
 const winnerHeader = document.querySelector(".roundWinner");
 const winnerContainer = document.querySelector(".showWinner");
 
+const playAgainButton = document.querySelector("#playAgainButton");
+const newGameButton = document.querySelector("#resetButton");
+
 const MAX_POINTS_IN_ROUND = 5;
 
-const Game = () => {
-  initializeGame();
-  playGame();
+if (document.body.classList.contains('GamewithAi')) {
+  const GameWithComputer = () => {
+  initializeGameWithAi();
+  playGameWithComputer();
+  
+}
 
-};
+GameWithComputer();
 
-Game();
+}
+
+else{
+  const MultiplayerGame = () => {
+    initializeGame();
+    playGame();
+  };
+  MultiplayerGame();
+}
+
+
+
 
