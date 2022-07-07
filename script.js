@@ -3,8 +3,10 @@ const Gameboard = (() => {
 
   function changeValue(idx, value) {
     if (
-      (idx >= 0 && idx < 9 &&  (gameboard[idx] === "") &&
-        (value === "X" || value === "x" ||  value === "O" || value === "o"))
+      idx >= 0 &&
+      idx < 9 &&
+      gameboard[idx] === "" &&
+      (value === "X" || value === "x" || value === "O" || value === "o")
     ) {
       gameboard[idx] = value.toUpperCase();
       return true;
@@ -16,7 +18,7 @@ const Gameboard = (() => {
   function resetGameboard() {
     gameboard.forEach((_, idx) => {
       gameboard[idx] = "";
-    })
+    });
   }
 
   return { getGameboard, changeValue, resetGameboard };
@@ -30,7 +32,7 @@ const Player = (name, sign) => {
   const addPoints = () => {
     score++;
   };
-  const resetScore = () => score = 0;
+  const resetScore = () => (score = 0);
   return { getName, getScore, getSign, addPoints, resetScore };
 };
 
@@ -52,10 +54,9 @@ const displayController = (() => {
     for (let [index, player] of playersDiv.entries()) {
       const name = player.querySelector(".name");
       name.textContent = players[index].getName();
-    
+
       const score = player.querySelector(".score");
-      score.textContent = players[index].getScore(); 
-        
+      score.textContent = players[index].getScore();
     }
   }
   //Gameboard
@@ -63,92 +64,113 @@ const displayController = (() => {
     for (let [index, field] of fields.entries()) {
       field.textContent = gameboard.getGameboard()[index];
     }
-    
   }
-  
-  function checkIfWon(){
-    const allEqual = arr => arr.every(val => val === arr[0] && val !== "");
+
+  function checkIfWon() {
+    const allEqual = (arr) => arr.every((val) => val === arr[0] && val !== "");
     const gameboardFields = gameboard.getGameboard();
     //rows
-    if ((allEqual(gameboardFields.slice(0, 3)))){
-        return true;
-      }
-    if ((allEqual(gameboardFields.slice(3, 6)))){
-        return true;
-      }
-    if ((allEqual(gameboardFields.slice(6, 9)))){
-        return true;
-      }
+    if (allEqual(gameboardFields.slice(0, 3))) {
+      return true;
+    }
+    if (allEqual(gameboardFields.slice(3, 6))) {
+      return true;
+    }
+    if (allEqual(gameboardFields.slice(6, 9))) {
+      return true;
+    }
     //columns
     for (let i = 0; i < 3; i++) {
-      const column = [gameboardFields[i], gameboardFields[i+3], gameboardFields[i+6]];
-      if (allEqual(column)){
+      const column = [
+        gameboardFields[i],
+        gameboardFields[i + 3],
+        gameboardFields[i + 6],
+      ];
+      if (allEqual(column)) {
         return true;
       }
     }
     //crosses
-    const crossLeft = [gameboardFields[0], gameboardFields[4], gameboardFields[8]];
-    const crossRight = [gameboardFields[2], gameboardFields[4], gameboardFields[6]];
-    if ((allEqual(crossLeft)) || allEqual(crossRight)){
+    const crossLeft = [
+      gameboardFields[0],
+      gameboardFields[4],
+      gameboardFields[8],
+    ];
+    const crossRight = [
+      gameboardFields[2],
+      gameboardFields[4],
+      gameboardFields[6],
+    ];
+    if (allEqual(crossLeft) || allEqual(crossRight)) {
       return true;
     }
-
   }
-  return { addPlayer, getPlayers, renderGameboard, renderPlayers , checkIfWon };
+  return { addPlayer, getPlayers, renderGameboard, renderPlayers, checkIfWon };
 })();
 
-function checkResult(){
-    const hasWon = displayController.checkIfWon();
-    const isDraw = (!hasWon && !Gameboard.getGameboard().includes(""));
+function checkResult() {
+  const hasWon = displayController.checkIfWon();
+  const isDraw = !hasWon && !Gameboard.getGameboard().includes("");
 
-    if (hasWon){
-      enableOrDisableChildren('.gameboard', true);
-      currentPlayer.addPoints();
-      if (currentPlayer.getScore() === MAX_POINTS_IN_ROUND){
-        hideOrShowButtons(false, newGameButton, winnerContainer);
-        showWinner(currentPlayer.getName(), currentPlayer.getSign());
-      }
-      else{
-        hideOrShowButtons(false, playAgainButton);
-      }
-    }
-    else if (isDraw){
-      enableOrDisableChildren('.gameboard', true);
+  if (hasWon) {
+    enableOrDisableChildren(".gameboard", true);
+    currentPlayer.addPoints();
+    if (currentPlayer.getScore() === MAX_POINTS_IN_ROUND) {
+      hideOrShowButtons(false, newGameButton, winnerContainer);
+      showWinner(currentPlayer.getName(), currentPlayer.getSign());
+    } else {
       hideOrShowButtons(false, playAgainButton);
     }
+  } else if (isDraw) {
+    enableOrDisableChildren(".gameboard", true);
+    hideOrShowButtons(false, playAgainButton);
+  }
 
-    displayController.renderGameboard();
-    displayController.renderPlayers();
-    currentPlayer = (currentPlayer === displayController.getPlayers()[0]) ? displayController.getPlayers()[1] : displayController.getPlayers()[0];
-    currentSign = currentPlayer.getSign();
-  
+  displayController.renderGameboard();
+  displayController.renderPlayers();
+  currentPlayer =
+    currentPlayer === displayController.getPlayers()[0]
+      ? displayController.getPlayers()[1]
+      : displayController.getPlayers()[0];
+  currentSign = currentPlayer.getSign();
 }
 
-function playAgain(scoreReset) { 
-  enableOrDisableChildren('.gameboard', false);
+// function swapAndShow(){
+//   displayController.renderGameboard();
+//   displayController.renderPlayers();
+//   currentPlayer = (currentPlayer === displayController.getPlayers()[0]) ? displayController.getPlayers()[1] : displayController.getPlayers()[0];
+//   currentSign = currentPlayer.getSign();
+// }
+
+function playAgain(scoreReset) {
+  enableOrDisableChildren(".gameboard", false);
   Gameboard.resetGameboard();
   displayController.renderGameboard();
   if (scoreReset) {
-    displayController.getPlayers().forEach(player => player.resetScore());
+    displayController.getPlayers().forEach((player) => player.resetScore());
     displayController.renderPlayers();
   }
 }
 
-function enableOrDisableChildren(parent, disable){
-  let childNodes = document.querySelector(parent).querySelectorAll('*');
+function enableOrDisableChildren(parent, disable) {
+  let childNodes = document.querySelector(parent).querySelectorAll("*");
   for (let node of childNodes) {
-      node.disabled = disable;
+    node.disabled = disable;
   }
 }
 
-function hideOrShowButtons (hide, ...buttons){
-  for (let button of buttons){
+function hideOrShowButtons(hide, ...buttons) {
+  for (let button of buttons) {
     button.hidden = hide;
   }
 }
 
 function showWinner(playerName, playerSign) {
-    winnerHeader.textContent = `The winner is: '${playerName} (${playerSign})' !`;
+  winnerHeader.textContent = `The winner is: '${playerName} (${playerSign})' !`;
+}
+
+function getRandomItem(items) {
+  return items[Math.floor(Math.random() * items.length)];
 }
 
 // window.addEventListener("beforeunload",  () => {
@@ -180,46 +202,62 @@ function initializeGameWithAi() {
   displayController.renderPlayers();
 }
 function playGame() {
-
-  fields.forEach(field => {
-    field.addEventListener("click", () =>{
-      if(Gameboard.changeValue(field.id, currentSign)){
-        checkResult(field);
+  fields.forEach((field) => {
+    field.addEventListener("click", () => {
+      if (Gameboard.changeValue(field.id, currentSign)) {
+        checkResult();
       }
     });
   });
-  
-  playAgainButton.addEventListener("click", () =>{
+
+  playAgainButton.addEventListener("click", () => {
     playAgain();
     hideOrShowButtons(true, playAgainButton, winnerContainer);
   });
-  newGameButton.addEventListener("click", () =>{
+  newGameButton.addEventListener("click", () => {
     playAgain(true);
-    hideOrShowButtons(true, newGameButton, winnerContainer );
-  })
-
+    hideOrShowButtons(true, newGameButton, winnerContainer);
+  });
 }
 function playGameWithComputer() {
-  fields.forEach(field => {
-    field.addEventListener("click", () =>{
-      if(Gameboard.changeValue(field.id, currentSign)){
-        checkResult();
-        
+  fields.forEach((field) => {
+    field.addEventListener("click", () => {
+      if (Gameboard.changeValue(field.id, currentSign)) {
+        if (displayController.checkIfWon()) {
+          checkResult();
+        } else {
+          checkResult();
+          Gameboard.changeValue(
+            getRandomItem(getEmptyFieldsIds(fields)),
+            currentSign
+          );
+          checkResult();
+        }
       }
     });
   });
-  // console.table(getEmptyFields(fields));
-  console.log(getEmptyFields(fields));
-
+  playAgainButton.addEventListener("click", () => {
+    playAgain();
+    currentPlayer = displayController.getPlayers()[0];
+    currentSign = currentPlayer.getSign();
+    hideOrShowButtons(true, playAgainButton, winnerContainer);
+  });
+  newGameButton.addEventListener("click", () => {
+    playAgain(true);
+    currentPlayer = displayController.getPlayers()[0];
+    currentSign = currentPlayer.getSign();
+    hideOrShowButtons(true, newGameButton, winnerContainer);
+  });
 }
-function getEmptyFields(fields){
-  const result = Array.from(fields).filter(field => field.innerText.trim() === "").map(field => field.id);
+function getEmptyFieldsIds(fields) {
+  const result = Array.from(fields)
+    .filter((field) => field.innerText.trim() === "")
+    .map((field) => field.id);
   return result;
 }
 
-function makeComputerMove(field){
+function makeComputerMove(field) {
   field.click();
-
 }
 
 let currentPlayer = null;
@@ -233,25 +271,17 @@ const newGameButton = document.querySelector("#resetButton");
 
 const MAX_POINTS_IN_ROUND = 5;
 
-if (document.body.classList.contains('GamewithAi')) {
+if (document.body.classList.contains("GamewithAi")) {
   const GameWithComputer = () => {
-  initializeGameWithAi();
-  playGameWithComputer();
-  
-}
+    initializeGameWithAi();
+    playGameWithComputer();
+  };
 
-GameWithComputer();
-
-}
-
-else{
+  GameWithComputer();
+} else {
   const MultiplayerGame = () => {
     initializeGame();
     playGame();
   };
   MultiplayerGame();
 }
-
-
-
-
